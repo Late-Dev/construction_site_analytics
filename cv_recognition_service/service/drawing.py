@@ -71,7 +71,8 @@ class DrawingService(BaseService):
             )
 
             # draw naming bbox and write tracking_id
-            rect_len = 50 if detection.tracking_id < 10 else 75
+            naming = f"#{detection.tracking_id}: {detection.class_name}"
+            rect_len = 200
             cv2.rectangle(
                 frame,
                 (detection.x_min, detection.y_min - 25),
@@ -81,7 +82,7 @@ class DrawingService(BaseService):
             )
             cv2.putText(
                 frame,
-                f"#{detection.tracking_id}: {detection.class_name}",
+                naming,
                 (detection.x_min, detection.y_min),
                 font,
                 font_scale,
