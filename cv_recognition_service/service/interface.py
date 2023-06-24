@@ -16,19 +16,14 @@ class FrameData:
 
 class BaseService(ABC):
     @abstractmethod
-    def __init__(
-        self, detection_model: DetectionModel, classification_model: ClassificationModel
-    ) -> None:
-        self.detection_model = detection_model
-        self.classification_model = classification_model
+    def __init__(self) -> None:
+        pass
 
-    @abstractmethod
     def process_frame(self, frame: np.ndarray) -> List[FrameData]:
-        pass
+        raise NotImplementedError()
 
-    @abstractmethod
     def process_video(self, video_src: str) -> List[FrameData]:
-        pass
+        raise NotImplementedError()
 
     @staticmethod
     def _crop_images(image: np.ndarray, det_predictions: List[DetectionData]):
@@ -47,6 +42,8 @@ class BaseService(ABC):
     ):
         detections = []
         pred_classes = []
+        if not classes_data:
+            classes_data = [1] * len(detections_data)
         for det, cls_data in zip(detections_data, classes_data):
             detections.append(det)
             pred_classes.append(cls_data)
