@@ -70,7 +70,7 @@ class YOLODetector(DetectionModel):
         return model
 
     def detect(self, video_path: str) -> List[List[DetectionData]]:
-        raw_preds = self.model.track(video_path, stream=True, conf=self.conf_thresh)
+        raw_preds = self.model.track(video_path, stream=True, verbose=False, conf=self.conf_thresh)
 
         predictions = []
         for p in raw_preds:
