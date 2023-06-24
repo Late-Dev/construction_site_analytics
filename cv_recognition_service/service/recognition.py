@@ -3,7 +3,6 @@ import numpy as np
 
 from infrastructure.interface import DetectionModel
 from infrastructure.interface import ClassificationModel
-from infrastructure.tracking.wrapper import DeepsortTracker
 from service.interface import BaseService, FrameData
 
 
@@ -15,7 +14,6 @@ class DummyRecognitionService(BaseService):
         det_threshold=0.9,
         cls_thresh=0.9,
     ):
-
         self.detection_model = detection_model
         self.classification_model = classification_model
 
@@ -29,3 +27,13 @@ class DummyRecognitionService(BaseService):
         frame_data = self._serialize_frame_data(detections_data, classes_data)
         plotted_frame = self._draw_predictions(frame, frame_data)
         return plotted_frame
+
+
+class RecognitionService(BaseService):
+    def __init__(self, detection_model: DetectionModel):
+        self.detection_model = detection_model
+
+    def process_video(self, video_src: str) -> List[FrameData]:
+        detections_data = self.detection_model.detect(video_src)
+        frame_data_list = [self._serialize_frame_data(d) for d in detections_data]
+        return frame_data_list

@@ -14,7 +14,7 @@ class Action:
 
 @dataclass
 class ClassificationData:
-    emotions: List[Action]
+    vehicles: List[Action]
 
 
 class ClassificationModel(ABC):
@@ -41,19 +41,17 @@ class ClassificationModel(ABC):
 
 @dataclass
 class DetectionData:
-    x_min: int
-    y_min: int
-    x_max: int
-    y_max: int
+    xyxy: List[int]
     score: float
     class_name: str = "truck"
     tracking_id: int = None
     activity: int = 0
 
     def __post_init__(self):
+        self.x_min, self.y_min, self.x_max, self.y_max = self.xyxy
         self.width = self.x_max - self.x_min
         self.height = self.y_max - self.y_min
-        self.bbox = (self.x_min, self.y_min, self.width, self.height)
+        self.xywh = (self.x_min, self.y_min, self.width, self.height)
 
 
 class DetectionModel:

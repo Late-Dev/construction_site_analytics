@@ -1,14 +1,13 @@
-import json
 from typing import List
 
 import numpy as np
 import cv2
+from ultralytics import YOLO
 
 from infrastructure.interface import (
     DetectionModel,
     DetectionData,
 )
-from infrastructure.retina_torch.retina_api import RetinaDetector
 
 
 class DummyDetector(DetectionModel):
@@ -42,7 +41,46 @@ class DummyDetector(DetectionModel):
             class_name = "truck"
             if score > self.conf_thresh:
                 data_model = DetectionData(
-                    x_min, y_min, x_max, y_max, score, class_name=class_name, tracking_id=0
+                    x_min,
+                    y_min,
+                    x_max,
+                    y_max,
+                    score,
+                    class_name=class_name,
+                    tracking_id=0,
                 )
                 data_list.append(data_model)
         return data_list
+
+
+class YOLODetector(DetectionModel):
+    def __init__(self, model_path: str, conf_thresh: float, device: str) -> None:
+        self.conf_thresh = conf_thresh
+        self.model = self._load_model(model_path, device)
+        self.cls2name = {
+            0: "digger",
+            1: "tractor",
+            2: "truck",
+            3: "crane",
+        }
+
+    def _load_model(self, model_path: str, device: str):
+        model = YOLO(model_path)
+        model.to(device)
+        return model
+
+    def detect(self, video_path: str) -> List[List[DetectionData]]:
+        raw_preds = self.model.track(video_path, stream=True, conf=self.conf_thresh)
+
+        predictions = []
+        for p in raw_preds:
+            boxes = p.boxes.cpu().numpy()
+            predictions.append(
+                [
+                    DetectionData(coords.tolist(), score, self.cls2name[cls], track_id)
+                    for coords, cls, score, track_id in zip(
+                        boxes.xyxy.astype(int), boxes.cls, boxes.conf, boxes.id
+                    )
+                ]
+            )
+        return predictions

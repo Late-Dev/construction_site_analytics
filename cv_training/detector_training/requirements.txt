@@ -1,0 +1,4 @@
+torch==2.0.1
+ultralytics==8.0.121
+jupyter==1.0.0
+notebook==6.5.4
