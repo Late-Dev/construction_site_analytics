@@ -165,6 +165,4 @@ runs/
 *.mp4
 *.jpeg
 detect/
-detector_training/datasets/construction_analytics/yolo/
-datasets/construction_analytics/yolo/
-detector_training/datasets/construction_analytics/yolo_only118/
+cv_training/detector_training/datasets/construction_analytics/yolo/
