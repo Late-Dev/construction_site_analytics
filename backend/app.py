@@ -57,7 +57,8 @@ async def get_video_card(_id: str):
 
 @app.get("/get_report")
 async def get_report(_id: str):
-    result = await get_video_card_data(_id)['json_res']
+    result = await get_video_card_data(_id)
+    result = result['json_res']
     
     file_path = 'report.json'
     json.dump(result, open(file_path, 'w'))
