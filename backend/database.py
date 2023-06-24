@@ -41,6 +41,11 @@ async def get_video_card_data(_id):
     card = await videos_collection.find_one({'_id': ObjectId(_id)})
     if card is not None:
         card['_id'] = str(card['_id'])
+    line_data = {
+        'Грузовик': {'Активность':[0]*100 + [1]*50 + [0]*100},
+        'Трактор': {'Активность':[0]*100 + [1]*50 + [0]*100}
+    }
+    card['line_data'] = line_data
     return card
 
 
