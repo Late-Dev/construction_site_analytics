@@ -10,7 +10,7 @@ from handlers import process_video_handler
 minio_host = os.environ["MINIO_HOST"]
 
 
-def clean_tmp_dirs(dirs=['/cv_recognition_service/tmp/', '/cv_recognition_service/tmp/output']):
+def clean_tmp_dirs(dirs=['/postprocess_service/tmp/', '/postprocess_service/tmp/output']):
     for dir in dirs:
         [f.unlink() for f in Path(dir).glob("*") if f.is_file()]
 
@@ -18,13 +18,13 @@ def clean_tmp_dirs(dirs=['/cv_recognition_service/tmp/', '/cv_recognition_servic
 def main(sleep_range: float):
     print("Start listen to mongo")
     while True:
-        task = find_task({"status": StatusEnum.uploaded})
+        task = find_task({"status": StatusEnum.cv_ready})
         if task:
-            print(task)
+            print(task["_id"])
             file_url = f'http://{minio_host}:9000/videos/'+task['url']
             try:
                 file_path = download_file(file_url)
-                update_task(task, {"status": StatusEnum.processing})
+                update_task(task, {"status": StatusEnum.postprocessing})
             except Exception as err:
                 error = f"File {file_url} not loaded \n Error: {err}"
                 print(error)
@@ -37,6 +37,7 @@ def main(sleep_range: float):
             except Exception as err:
                 error = f"Error while processing video file: {file_url} \n Error: {err}"
                 update_task(task, {"status": StatusEnum.error})
+                raise err
                 continue
         else:
             print(f"no task, sleeping {sleep_range}s ...")
@@ -45,7 +46,7 @@ def main(sleep_range: float):
 
 
 if __name__ == "__main__":
-    os.makedirs('/cv_recognition_service/tmp/', exist_ok=True)
-    os.makedirs('/cv_recognition_service/output/', exist_ok=True)
+    os.makedirs('/postprocess_service/tmp/', exist_ok=True)
+    os.makedirs('/postprocess_service/output/', exist_ok=True)
 
     main(sleep_range=5.0)
