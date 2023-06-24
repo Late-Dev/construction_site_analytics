@@ -4,13 +4,15 @@ from pathlib import Path
 
 from transport.database import StatusEnum, find_task, update_task
 from transport.s3 import download_file
-from handlers import process_video_handler
+from handlers import process_video_handler, generate_json_result_handler
 
 
 minio_host = os.environ["MINIO_HOST"]
 
 
-def clean_tmp_dirs(dirs=['/postprocess_service/tmp/', '/postprocess_service/tmp/output']):
+def clean_tmp_dirs(
+    dirs=["/postprocess_service/tmp/", "/postprocess_service/tmp/output"]
+):
     for dir in dirs:
         [f.unlink() for f in Path(dir).glob("*") if f.is_file()]
 
@@ -21,7 +23,7 @@ def main(sleep_range: float):
         task = find_task({"status": StatusEnum.cv_ready})
         if task:
             print(task["_id"])
-            file_url = f'http://{minio_host}:9000/videos/'+task['url']
+            file_url = f"http://{minio_host}:9000/videos/" + task["url"]
             try:
                 file_path = download_file(file_url)
                 update_task(task, {"status": StatusEnum.postprocessing})
@@ -33,6 +35,7 @@ def main(sleep_range: float):
             # call processing handler
             try:
                 process_video_handler(file_path, task)
+                generate_json_result_handler(file_path, task)
                 clean_tmp_dirs()
             except Exception as err:
                 error = f"Error while processing video file: {file_url} \n Error: {err}"
@@ -44,9 +47,8 @@ def main(sleep_range: float):
             sleep(sleep_range)
 
 
-
 if __name__ == "__main__":
-    os.makedirs('/postprocess_service/tmp/', exist_ok=True)
-    os.makedirs('/postprocess_service/output/', exist_ok=True)
+    os.makedirs("/postprocess_service/tmp/", exist_ok=True)
+    os.makedirs("/postprocess_service/output/", exist_ok=True)
 
     main(sleep_range=5.0)
