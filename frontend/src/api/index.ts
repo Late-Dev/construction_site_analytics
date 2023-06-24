@@ -1,0 +1,34 @@
+import axios from "axios";
+
+
+// const API_URL = "http://localhost:8000";
+const API_URL = process.env.VUE_APP_API_URL
+axios.defaults.baseURL = API_URL
+
+export interface Video{
+    url: String,
+    construction_object: String,
+    date: Date
+}
+
+export function isAlive() {
+    return axios.get(`/`)
+}
+
+export function addVideo(payload: Video){
+    return axios.post('/add_video', payload)
+}
+
+export function getVideoList(){
+    return axios.get('/get_video_list')
+}
+
+export function getVideoCard(_id: String){
+    return axios.get('/get_video_card', { params: {_id}})
+}
+
+export function getAnalytics(filter_type?: String, filter_value?: String, group?: String){
+    
+    return axios.get('/get_analytics', {params: {filter_type, filter_value, group}})
+}
+//teacher, subject, student
