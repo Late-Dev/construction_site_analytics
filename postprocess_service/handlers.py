@@ -1,5 +1,4 @@
 import os
-import json
 
 import cv2
 
@@ -80,4 +79,4 @@ def generate_json_result_handler(filepath: str, task: dict):
                 result[track2idx[track_id]]["start"] = frame_to_timestamp[frame_num]
             result[track2idx[track_id]]["end"] = frame_to_timestamp[frame_num]
 
-    update_task(task, {"json_res": json.dumps(result)})
+    update_task(task, {"json_res": result})
