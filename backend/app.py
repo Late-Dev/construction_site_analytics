@@ -1,6 +1,10 @@
+import json
+
 from fastapi import FastAPI
 from fastapi.encoders import jsonable_encoder
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+
 
 from database import add_video_data, get_video_list_data, get_video_card_data, get_analytics_data
 from models import VideoSchema
@@ -50,6 +54,14 @@ async def get_video_list():
 async def get_video_card(_id: str):
     result = await get_video_card_data(_id)
     return result if result is not None else {'Error': 'Video not found'}
+
+@app.get("/get_report")
+async def get_report(_id: str):
+    result = await get_video_card_data(_id)['json_res']
+    
+    file_path = 'report.json'
+    json.dump(result, open(file_path, 'w'))
+    return FileResponse(path=file_path, media_type='application/json', filename=file_path)
 
 # @app.get("/get_analytics")
 # async def get_analytics(filter_type: str=None, filter_value: str=None, group:str=None):

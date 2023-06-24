@@ -8,6 +8,7 @@
             </p>
             
         </EmptyCard>
+        <BaseButton type="secondary" class="download__button" @click="downloadReport()" style="width: 300px; margin: 20px"> Скачать отчет </BaseButton>
         <!-- <EmptyCard class="analytics__card">
           <template #header>
                 Состояние класса во время урока
@@ -29,6 +30,7 @@
 <script setup >
 import EmptyCard from "./EmptyCard.vue"
 import BaseHeader from "./BaseHeader.vue"
+import BaseButton from "./BaseButton.vue";
 import { useMainStore } from "@/store/index";
 // import { ref, computed, onMounted} from 'vue'
 import { ref, onMounted} from 'vue'
@@ -38,9 +40,14 @@ import { Chart,  registerables } from "chart.js";
 import { getVideoCard } from '@/api/index'
 // import BaseSelect from "./BaseSelect.vue";
 // import LineChartCard from "./LineChartCard.vue";
+import { getReport} from '@/api/index'
 
 
 const mainStore = useMainStore();
+
+async function downloadReport () {
+  await getReport(mainStore.video._id)
+}
 
 onMounted(async ()=>{
   const resp = await getVideoCard(mainStore.video._id)
