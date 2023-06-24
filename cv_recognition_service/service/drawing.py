@@ -27,7 +27,7 @@ class DrawingService(BaseService):
         width = int(capture.get(cv2.CAP_PROP_FRAME_WIDTH))
 
         fps = 10
-        fourcc = cv2.VideoWriter_fourcc(*"h264")
+        fourcc = cv2.VideoWriter_fourcc(*"mp4v")
         out_path = f"output/{os.path.basename(video_filepath)}"
         writer = cv2.VideoWriter(out_path, fourcc, fps, (width, height))
 
@@ -38,14 +38,14 @@ class DrawingService(BaseService):
             new_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             frame_data = frame_data_list[frame_num]
 
-            plotted_frame = self.draw(new_frame, frame_data)
+            plotted_frame = self.process_frame(new_frame, frame_data)
             plotted_frame = cv2.cvtColor(plotted_frame, cv2.COLOR_RGB2BGR)
             writer.write(plotted_frame)
 
         writer.release()
         capture.release()
 
-    def draw(
+    def process_frame(
         self,
         frame: np.ndarray,
         frame_data: FrameData,
