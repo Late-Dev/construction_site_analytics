@@ -39,15 +39,27 @@ def process_raw_data(yolo_dir: Path, cvat_dir: Path, videos_dir: Path, img_size=
         labels_dir = tmp_dir / "obj_train_data"
         video_path = videos_dir / f"{zip_filepath.stem}.mp4"
         labels_filepaths = sorted(list(labels_dir.iterdir()))
-        frames = get_frames(video_path.as_posix(), img_size)
-        for src, frame in tqdm(zip(labels_filepaths, frames), total=len(labels_filepaths)):
+        # frames = get_frames(video_path.as_posix(), img_size)
+        # for src, frame in tqdm(zip(labels_filepaths, frames), total=len(labels_filepaths)):
+
+        cap = cv2.VideoCapture(video_path.as_posix())
+        for src in tqdm(labels_filepaths):
+            has_frame, frame = cap.read()
+            if not has_frame:
+                break
+
+            if img_size:
+                frame = cv2.resize(frame, img_size)
+            
             # save label
             dst_label = full_dst_label_dir / f"{zip_filepath.stem}_{src.name}"
             shutil.copy(src, dst_label)
             # save frame
             dst_frame = full_dst_frame_dir / f"{zip_filepath.stem}_{src.stem}.jpg"
             cv2.imwrite(dst_frame.as_posix(), frame)
-        
+
+        cap.release()
+
         shutil.rmtree(tmp_dir)    
 
 

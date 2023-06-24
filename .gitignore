@@ -163,5 +163,7 @@ runs/
 *.pt
 *.zip
 *.mp4
+detect/
 detector_training/datasets/construction_analytics/yolo/
 datasets/construction_analytics/yolo/
+detector_training/datasets/construction_analytics/yolo_only118/
