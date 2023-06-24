@@ -46,6 +46,6 @@ class BaseService(ABC):
             classes_data = [1] * len(detections_data)
         for det, cls_data in zip(detections_data, classes_data):
             detections.append(det)
-            # pred_classes.append(cls_data)
+            pred_classes.append(cls_data)
         frame_data = FrameData(detections, pred_classes)
         return frame_data

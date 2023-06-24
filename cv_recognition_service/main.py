@@ -7,6 +7,9 @@ from transport.s3 import download_file
 from handlers import process_video_handler, upload_preview_handler
 
 
+minio_host = os.environ["MINIO_HOST"]
+
+
 def clean_tmp_dirs(dirs=['/cv_recognition_service/tmp/', '/cv_recognition_service/tmp/output']):
     for dir in dirs:
         [f.unlink() for f in Path(dir).glob("*") if f.is_file()]
@@ -18,8 +21,7 @@ def main(sleep_range: float):
         task = find_task({"status": StatusEnum.uploaded})
         if task:
             print(task)
-            # file_url = 'http://minio:9000/videos/'+task['url']
-            file_url = 'http://10.10.66.25:9000/videos/'+task['url']
+            file_url = f'http://{minio_host}:9000/videos/'+task['url']
             try:
                 file_path = download_file(file_url)
                 update_task(task, {"status": StatusEnum.processing})

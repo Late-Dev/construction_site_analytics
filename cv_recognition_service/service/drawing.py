@@ -26,9 +26,10 @@ class DrawingService(BaseService):
         height = int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
         width = int(capture.get(cv2.CAP_PROP_FRAME_WIDTH))
 
-        fps = 10
+        fps = int(capture.get(cv2.CAP_PROP_FPS))
         fourcc = cv2.VideoWriter_fourcc(*"mp4v")
         out_path = f"output/{os.path.basename(video_filepath)}"
+
         writer = cv2.VideoWriter(out_path, fourcc, fps, (width, height))
 
         for frame_num in trange(length):
@@ -44,6 +45,8 @@ class DrawingService(BaseService):
 
         writer.release()
         capture.release()
+
+        return out_path
 
     def process_frame(
         self,

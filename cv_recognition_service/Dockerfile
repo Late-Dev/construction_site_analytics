@@ -19,5 +19,4 @@ RUN pip install lap>=0.4
 COPY . $WORKDIR
 
 # CMD jupyter notebook --ip 0.0.0.0 --port 9988 --allow-root --NotebookApp.token=""
-# ENTRYPOINT [ "python", "main.py" ]
-ENTRYPOINT [ "bash" ]
+ENTRYPOINT [ "python", "main.py" ]

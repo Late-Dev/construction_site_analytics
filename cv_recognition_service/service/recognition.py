@@ -30,13 +30,10 @@ class DummyRecognitionService(BaseService):
 
 
 class RecognitionService(BaseService):
-    def __init__(
-        self, detection_model: DetectionModel, classification_model: ClassificationModel
-    ):
+    def __init__(self, detection_model: DetectionModel):
         self.detection_model = detection_model
-        self.classification_model = classification_model
 
-    def process_video(self, video_src: str) -> FrameData:
+    def process_video(self, video_src: str) -> List[FrameData]:
         detections_data = self.detection_model.detect(video_src)
-        frame_data_list = self._serialize_frame_data(detections_data)
+        frame_data_list = [self._serialize_frame_data(d) for d in detections_data]
         return frame_data_list

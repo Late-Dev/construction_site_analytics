@@ -3,7 +3,7 @@ import os
 import cv2
 import numpy as np
 
-from building import build_recognition_service
+from building import build_recognition_service, build_drawing_service
 
 color_map = {
     "digger": np.array([178, 255, 54]),
@@ -13,41 +13,13 @@ color_map = {
 }
 
 service = build_recognition_service()
+drawing_service = build_drawing_service()
 
 
 def process_video(video_path: str):
     frame_data_list = service.process_video(video_path)
-
-    capture = cv2.VideoCapture(video_path)
-    length = int(capture.get(cv2.CAP_PROP_FRAME_COUNT))
-    width = int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT)) + int(
-        capture.get(cv2.CAP_PROP_FRAME_WIDTH)
-    )
-    height = int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
-
-    fps = 10
-    fourcc = cv2.VideoWriter_fourcc(*"h264")
-    out_path = f"output/{os.path.basename(video_path)}"
-    writer = cv2.VideoWriter(out_path, fourcc, fps, (width, height))
-    line_data = {}
-    bar_data = {}
-    # has_frame = True
-
-    for frame_num in range(length):
-        has_frame, frame = capture.read()
-        if frame is None:
-            break
-        new_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        frame_data = frame_data_list.detections[frame_num]
-
-        # TODO: drawing logic
-        plotted_frame = service.draw(new_frame, frame_data)
-        plotted_frame = cv2.cvtColor(plotted_frame, cv2.COLOR_RGB2BGR)
-        writer.write(plotted_frame)
-
-    writer.release()
-    capture.release()
-    return out_path, frame_data_list, bar_data, line_data
+    out_path = drawing_service.process_video(video_path, frame_data_list)
+    return out_path
 
 
 def create_preview_image(video_path: str):
