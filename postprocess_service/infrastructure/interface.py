@@ -12,6 +12,11 @@ class Action:
     score: float
 
 
+@dataclass
+class ClassificationData:
+    actions: List[Action]
+
+
 class ClassificationModel(ABC):
     @abstractmethod
     def _load_model(self, model_path: str):
@@ -27,7 +32,7 @@ class ClassificationModel(ABC):
         """
 
     @abstractmethod
-    def predict(self, image: np.ndarray) -> List[Action]:
+    def predict(self, image: np.ndarray) -> ClassificationData:
         """
         Predict action of detected vehicle
         """

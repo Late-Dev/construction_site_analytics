@@ -3,9 +3,9 @@
         <div class="video-card__preview">
             <video :src="video.url" s></video>
             <div class="video-card__status">
-                <div class="video-card__status-test" 
+                <div class="video-card__status-test"
                 :class="{
-                    'video-card__status-test--uploaded': video.status==='uploaded' ||video.status==='processing' ,
+                    'video-card__status-test--uploaded': video.status==='uploaded' ||video.status==='processing' ||video.status==='cv_ready' ||video.status==='postprocessing',
                     'video-card__status-test--success': video.status==='ready',
                     'video-card__status-test--error': video.status==='error',
                     }">{{video.status}}</div>

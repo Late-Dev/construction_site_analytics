@@ -1,9 +1,9 @@
 numpy
 pydantic==1.10.9
-ultralytics==8.0.121
 opencv-python==4.6.0.66
 tqdm
 matplotlib==3.5.2
 scikit-image
 pymongo==4.1.1
 pandas
+requests

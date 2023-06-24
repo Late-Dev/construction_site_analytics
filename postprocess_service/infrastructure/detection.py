@@ -74,7 +74,7 @@ class YOLODetector(DetectionModel):
             boxes = p.boxes.cpu().numpy()
             predictions.append(
                 [
-                    DetectionData(coords.tolist(), float(score), self.cls2name[cls], int(track_id))
+                    DetectionData(coords.tolist(), score, self.cls2name[cls], track_id)
                     for coords, cls, score, track_id in zip(
                         boxes.xyxy.astype(int), boxes.cls, boxes.conf, boxes.id
                     )

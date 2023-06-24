@@ -35,13 +35,14 @@ def update_task(task: dict, set: dict):
     try:
         lesson_videos_collection.update_one({"_id": task["_id"]}, {"$set": set})
         return True
-    except Exception as err:
-        raise err
+    except:
+        return False
 
 
 if __name__ == "__main__":
     task = find_task({"status": StatusEnum.uploaded})
     print(task)
+    print()
 
     if update_task(task, {"preview": "http://test.preview-url", "status": StatusEnum.processing}):
         task = find_task({"status": StatusEnum.processing})

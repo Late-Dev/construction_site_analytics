@@ -5,13 +5,18 @@ from dataclasses import dataclass
 import numpy as np
 
 from infrastructure.interface import DetectionModel, DetectionData
-from infrastructure.interface import ClassificationModel, ClassificationData
+from infrastructure.interface import ClassificationModel, Action
 
 
 @dataclass
 class FrameData:
     detections: List[DetectionData]
-    actions: List[ClassificationData]
+    actions: List[Action]
+
+
+@dataclass
+class FrameDataList:
+    data: List[FrameData]
 
 
 class BaseService(ABC):
@@ -22,7 +27,7 @@ class BaseService(ABC):
     def process_frame(self, frame: np.ndarray) -> List[FrameData]:
         raise NotImplementedError()
 
-    def process_video(self, video_src: str) -> List[FrameData]:
+    def process_video(self, video_src: str) -> FrameDataList:
         raise NotImplementedError()
 
     @staticmethod
@@ -38,14 +43,9 @@ class BaseService(ABC):
     @staticmethod
     def _serialize_frame_data(
         detections_data: List[DetectionData],
-        classes_data: Optional[ClassificationData] = None,
+        classes_data: List[Action] = None,
     ):
-        detections = []
-        pred_classes = []
         if not classes_data:
-            classes_data = [1] * len(detections_data)
-        for det, cls_data in zip(detections_data, classes_data):
-            detections.append(det)
-            pred_classes.append(cls_data)
-        frame_data = FrameData(detections, pred_classes)
+            classes_data = [Action("None", "0", 1.0)] * len(detections_data)
+        frame_data = FrameData(detections_data, classes_data)
         return frame_data
