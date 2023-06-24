@@ -1,6 +1,6 @@
 from abc import abstractmethod, ABC
 from dataclasses import dataclass
-from typing import List
+from typing import List, Any
 
 import numpy as np
 
@@ -47,6 +47,8 @@ class DetectionData:
         self.width = self.x_max - self.x_min
         self.height = self.y_max - self.y_min
         self.xywh = (self.x_min, self.y_min, self.width, self.height)
+        self.x_center = (self.x_min + self.x_max) // 2
+        self.y_center = (self.y_min + self.y_max) // 2
 
 
 class DetectionModel:
@@ -64,7 +66,7 @@ class DetectionModel:
         """
 
     @abstractmethod
-    def detect(self, image: np.ndarray) -> List[DetectionData]:
+    def detect(self, source: Any) -> List[DetectionData]:
         """
         Get detections from the image
         """

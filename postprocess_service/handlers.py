@@ -1,4 +1,5 @@
 import os
+import datetime
 
 import cv2
 
@@ -45,10 +46,8 @@ def generate_json_result_handler(filepath: str, task: dict):
     cap.release()
     frame_to_timestamp = {}
     for frame_num in range(n_frames):
-        secs = frame_num // fps
-        minutes = secs // 60
-        secs %= 60
-        frame_to_timestamp[frame_num] = f"{minutes}m {secs}s"
+        time = datetime.timedelta(seconds=frame_num // fps)
+        frame_to_timestamp[frame_num] = f"{time}"
 
     result = []
 
