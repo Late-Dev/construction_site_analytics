@@ -18,7 +18,7 @@ client = MongoClient(MONGO_DETAILS)
 
 database = client.data
 
-lesson_videos_collection = database.get_collection("lesson_videos")
+lesson_videos_collection = database.get_collection("videos")
 
 
 def find_task(field: dict):

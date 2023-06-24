@@ -28,9 +28,9 @@ class BaseService(ABC):
         self.detection_model = detection_model
         self.classification_model = classification_model
 
-    @abstractmethod
-    def process_frame(self, frame: np.ndarray) -> List[FrameData]:
-        pass
+   #  @abstractmethod
+   #  def process_frame(self, frame: np.ndarray) -> List[FrameData]:
+   #      pass
 
     @abstractmethod
     def process_video(self, video_src: str) -> List[FrameData]:
@@ -132,12 +132,12 @@ class BaseService(ABC):
 
     @staticmethod
     def _serialize_frame_data(
-        detections_data: List[DetectionData], classes_data: Optional[ClassificationData] = None
+        detections_data: List[DetectionData]
     ):
         detections = []
         pred_classes = []
-        for det, cls_data in zip(detections_data, classes_data):
+        for det in detections_data:
             detections.append(det)
-            pred_classes.append(cls_data)
+            # pred_classes.append(cls_data)
         frame_data = FrameData(detections, pred_classes)
         return frame_data
