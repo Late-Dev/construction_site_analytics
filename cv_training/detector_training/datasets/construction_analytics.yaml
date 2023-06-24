@@ -1,4 +1,4 @@
-path: ../detector_training/datasets/construction_analytics/yolo  # dataset root dir
+path: ../cv_training/detector_training/datasets/construction_analytics/yolo  # dataset root dir
 train: images/train  # train images (relative to 'path')
 val: images/val  # val images (relative to 'path')
 test:  # test images (optional)
