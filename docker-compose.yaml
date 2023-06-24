@@ -9,10 +9,10 @@ services:
     environment:
       - MONGO_HOST=mongo
 
-  # frontend:
-  #   build: ./frontend
-  #   ports:
-  #     - 8080:8080
+  frontend:
+    build: ./frontend
+    ports:
+      - 8080:8080
 
   # cv-service:
   #   runtime: nvidia
