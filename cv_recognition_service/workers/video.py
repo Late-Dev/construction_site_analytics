@@ -38,7 +38,7 @@ def process_video(video_path: str):
         if frame is None:
             break
         new_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        frame_data = frame_data_list[frame_num]
+        frame_data = frame_data_list.detections[frame_num]
 
         # TODO: drawing logic
         plotted_frame = service.draw(new_frame, frame_data)

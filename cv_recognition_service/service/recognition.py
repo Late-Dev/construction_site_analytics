@@ -36,7 +36,7 @@ class RecognitionService(BaseService):
         self.detection_model = detection_model
         self.classification_model = classification_model
 
-    def process_video(self, video_src: str) -> List[FrameData]:
+    def process_video(self, video_src: str) -> FrameData:
         detections_data = self.detection_model.detect(video_src)
-        frame_data_list = [self._serialize_frame_data(d) for d in detections_data]
+        frame_data_list = self._serialize_frame_data(detections_data)
         return frame_data_list

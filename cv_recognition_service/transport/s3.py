@@ -9,6 +9,7 @@ def read_file_as_bytes(file_path: str):
 
 
 def download_file(url: str, save_path: str = 'tmp/'):
+    print(f"Start loading video {url}")
     file_path = f"{save_path}{url.split('/')[-1]}"
     r = requests.get(url, verify=False)
     if r.ok:

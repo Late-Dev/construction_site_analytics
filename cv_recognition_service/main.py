@@ -13,11 +13,13 @@ def clean_tmp_dirs(dirs=['/cv_recognition_service/tmp/', '/cv_recognition_servic
 
 
 def main(sleep_range: float):
+    print("Start listen to mongo")
     while True:
         task = find_task({"status": StatusEnum.uploaded})
         if task:
             print(task)
-            file_url = 'http://minio:9000/videos/'+task['url']
+            # file_url = 'http://minio:9000/videos/'+task['url']
+            file_url = 'http://10.10.66.25:9000/videos/'+task['url']
             try:
                 file_path = download_file(file_url)
                 update_task(task, {"status": StatusEnum.processing})
@@ -33,6 +35,7 @@ def main(sleep_range: float):
             except Exception as err:
                 error = f"Error while processing video file: {file_url} \n Error: {err}"
                 update_task(task, {"status": StatusEnum.error})
+                raise err
                 continue
         else:
             print(f"no task, sleeping {sleep_range}s ...")

@@ -41,10 +41,7 @@ class DummyDetector(DetectionModel):
             class_name = "truck"
             if score > self.conf_thresh:
                 data_model = DetectionData(
-                    x_min,
-                    y_min,
-                    x_max,
-                    y_max,
+                    [x_min, y_min, x_max, y_max],
                     score,
                     class_name=class_name,
                     tracking_id=0,
@@ -54,7 +51,7 @@ class DummyDetector(DetectionModel):
 
 
 class YOLODetector(DetectionModel):
-    def __init__(self, model_path: str, conf_thresh: float, device: str) -> None:
+    def __init__(self, model_path: str, conf_thresh: float, device: str = "cuda:0") -> None:
         self.conf_thresh = conf_thresh
         self.model = self._load_model(model_path, device)
         self.cls2name = {
