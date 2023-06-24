@@ -56,7 +56,7 @@ class DummyDetector(DetectionModel):
 class YOLODetector(DetectionModel):
     def __init__(self, model_path: str, conf_thresh: float, device: str) -> None:
         self.conf_thresh = conf_thresh
-        self.model = self._load_model(model_path)
+        self.model = self._load_model(model_path, device)
         self.cls2name = {
             0: "digger",
             1: "tractor",
@@ -70,7 +70,7 @@ class YOLODetector(DetectionModel):
         return model
 
     def detect(self, video_path: str) -> List[List[DetectionData]]:
-        raw_preds = self.model.track(video_path, stream=True)
+        raw_preds = self.model.track(video_path, stream=True, conf=self.conf_thresh)
 
         predictions = []
         for p in raw_preds:

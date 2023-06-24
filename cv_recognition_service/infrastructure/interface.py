@@ -14,7 +14,7 @@ class Action:
 
 @dataclass
 class ClassificationData:
-    emotions: List[Action]
+    vehicles: List[Action]
 
 
 class ClassificationModel(ABC):
