@@ -4,6 +4,7 @@ from typing import List
 
 import cv2
 import numpy as np
+from tqdm import trange
 
 from service.interface import BaseService, FrameData
 
@@ -30,7 +31,7 @@ class DrawingService(BaseService):
         out_path = f"output/{os.path.basename(video_filepath)}"
         writer = cv2.VideoWriter(out_path, fourcc, fps, (width, height))
 
-        for frame_num in range(length):
+        for frame_num in trange(length):
             _, frame = capture.read()
             if frame is None:
                 break
