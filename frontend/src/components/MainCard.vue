@@ -4,7 +4,7 @@
             <h2>{{data.name}}</h2>
         </div>
         <div class="main-card__image">
-            <img :src="data.image" alt="">
+            <img :src="data.image" alt="" style="height: 100%">
         </div>
         <div class="main-card__description">
             <span>{{data.description}}</span>
@@ -32,7 +32,7 @@ defineProps({
     background-color: white;
     height: 680px;
     width: 430px;
-    border-radius: 24px;
+    border-radius: 12px;
     box-shadow: 0px 8px 16px rgba(17, 17, 17, 0.06);
     padding: 50px 40px;
     box-sizing: border-box;

@@ -8,7 +8,7 @@ axios.defaults.baseURL = API_URL
 export interface Video{
     url: String,
     construction_object: String,
-    date: Date
+    date: String
 }
 
 export function isAlive() {

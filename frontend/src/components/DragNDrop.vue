@@ -55,7 +55,7 @@ function addedFile(file){
     width: 100%;
     border-radius: 12px;
     border: 1px dashed $color-primary-dark;
-    background: $color-primary-bg;
+    background: #FFE9D6;
 
     &--filled{
         padding: 35px 25px;

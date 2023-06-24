@@ -13,16 +13,8 @@
         </div>
         <div class="video-card__date">{{ videotime}}</div>
         <div class="video-card__desc">
-            <div class="video-card__subtitle">Предмет</div>
-            <div class="video-card__item">{{video.subject}}</div>
-        </div>
-        <div class="video-card__desc">
-            <div class="video-card__subtitle">Класс</div>
-            <div class="video-card__item">{{video.school_class}}</div>
-        </div>
-        <div class="video-card__desc">
-            <div class="video-card__subtitle">Преподаватель</div>
-            <div class="video-card__item">{{video.teacher}}</div>
+            <div class="video-card__subtitle">Строительный объект</div>
+            <div class="video-card__item">{{video.construction_object}}</div>
         </div>
     </div>
 </template>
@@ -57,11 +49,7 @@ const props = defineProps({
 })
 
 const videotime = computed(()=>{
-    const itemtime = props.video.lesson_start_time
-    const dt = Date.parse(itemtime)
-    const fulldate = new Date(dt)
-    const day = fulldate.toLocaleDateString()
-    return  fulldate.getHours() + ':' + fulldate.getMinutes() + ', '+ day
+    return props.video.date
 })
 
 
@@ -72,7 +60,7 @@ const videotime = computed(()=>{
 .video-card{
     background-color: $color-white;
     width: 430px;
-    height: 490px;
+    height: 440px;
     padding: 35px 25px;
     box-sizing: border-box;
     box-shadow: 0px 8px 16px rgba(17, 17, 17, 0.06);
@@ -116,7 +104,7 @@ const videotime = computed(()=>{
         min-height: 200px;
         background-color: grey;
         box-shadow: 0px 8px 16px rgba(17, 17, 17, 0.04);
-        border-radius: 12px;
+        border-radius: 6px;
         overflow: hidden;
         video{
             width:  100%;

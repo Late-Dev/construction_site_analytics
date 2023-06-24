@@ -9,46 +9,18 @@
                 <div>
                     <DragNDrop @upload="videoUpload"></DragNDrop>
                 </div>
-                <!-- <div class="upload-popup__row">
-                    <div class="upload-popup__class">
-                        <BaseSelect @input="(item)=>{payload.school_class = item}" 
-                        :options="[
-                            {label: '1А', value: '1А'},
-                            {label: '1Б', value: '1Б'},
-                            {label: '1В', value: '1В'},
-                            {label: '2А', value: '2А'},
-                            {label: '3А', value: '3А'},
-                            {label: '6А', value: '6А'},
-                            {label: '7А', value: '7А'},
-                            {label: '8А', value: '8А'},
-                            ]"
-                         label="Класс"/>
-                    </div>
-                    <div class="upload-popup__time">
-                        <BaseSelect @input="handleData" label="Время начала" :options="lessons" />
-                    </div>
-                    
-                </div> -->
                 <div class="upload-popup__row">
                     <BaseSelect 
                     :options="[
                             {label: 'Школа Архангельск', value: 'Школа Архангельск'},
-                            // {label: 'Математика', value: 'Математика'},
-                            // {label: 'Английский', value: 'Английский'},
                             ]"
                     
                     
                     @input="(data)=>{payload.construction_object = data}" label="Строительный объект"/>
                 </div>
-                <!-- <div class="upload-popup__row">
-                    <BaseSelect 
-                    :options="[
-                            {label: 'Анна Андреевна Рязанова', value: 'Анна Андреевна Рязанова'},
-                            {label: 'Альбина Николаевна Крупнина', value: 'Альбина Николаевна Крупнина'},
-                            {label: 'Галина Александровна Неуймина', value: 'Галина Александровна Неуймина'},
-                            ]"
-                    @input="(data)=>{payload.teacher = data}" label="Преподаватель"/>
-                </div> -->
+                <div class="upload-popup__row">
+                    <input type="date" v-model="date" style="width: 360px; height: 56px; background: #EFF0F6; border-radius: 6px; border: 0px; font-size: 14px; font-family: Poppins; font-weight: 400; line-height: 28px; letter-spacing: 0.75px; padding: 0px 12px;" />
+                </div>
                 <div class="upload-popup__row">
                     <BaseButton @click="submitVideo" :disabled="sending" type="secondary" class="upload-popup__button">Загрузить</BaseButton>
                 </div>
@@ -81,22 +53,13 @@ import { onMounted, onUnmounted, ref } from "vue";
 
 import { addVideo, Video} from '@/api/index'
 
+const date = ref();
 
 const payload = ref({
     url: '',
     construction_object: '',
-    date: new Date
+    date: date
 } as Video)
-
-
-function handleData(data: String){
-    const time = new Date()
-    const hours = data.split(':')[0]
-    const minutes = data.split(':')[1]
-    time.setHours(parseInt(hours))
-    time.setMinutes(parseInt(minutes))
-    payload.value.lesson_start_time = time
-}
 
 onMounted(()=>{
     window.addEventListener('keyup', escCloseModal)
@@ -126,16 +89,6 @@ async function submitVideo(){
     })
 }
 
-const lessons = ref([
-    {label:'8:30-9:15', value:'8:30'},
-    {label:'9:30-10:15', value:'9:30'},
-    {label:'10:30-11:15', value:'10:30'},
-    {label:'11:30-12:15', value:'11:30'},
-    {label:'12:30-13:15', value:'12:30'},
-    {label:'13:25-14:10', value:'13:25'},
-    {label:'14:25-15:10', value:'14:25'},
-    ])
-
 const mainStore = useMainStore();
 
 function videoUpload(url: String){
@@ -147,8 +100,8 @@ function videoUpload(url: String){
 
 <style scoped lang="scss">
 .upload-popup{
-    height: 640px;
-    width: 540px;
+    height: 540px;
+    width: 560px;
     background: white;
     margin: 150px auto;
     border-radius: 24px;
@@ -196,6 +149,7 @@ function videoUpload(url: String){
         justify-content: center;
         img{
             margin-top: -20px;
+            width: 50%;
         }
         &-info{
             font-weight: 500;

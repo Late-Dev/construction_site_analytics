@@ -42,7 +42,7 @@ const props = defineProps({
     padding: 18px 32px;
 
     /* Primary/Default */
-    border-radius: 40px;
+    border-radius: 12px;
     width: 100%;
     font-weight: 600;
     font-size: 16px;
