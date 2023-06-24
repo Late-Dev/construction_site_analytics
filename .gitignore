@@ -163,6 +163,7 @@ runs/
 *.pt
 *.zip
 *.mp4
+*.jpeg
 detect/
 detector_training/datasets/construction_analytics/yolo/
 datasets/construction_analytics/yolo/
