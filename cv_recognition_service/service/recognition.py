@@ -30,8 +30,11 @@ class DummyRecognitionService(BaseService):
 
 
 class RecognitionService(BaseService):
-    def __init__(self, detection_model: DetectionModel):
+    def __init__(
+        self, detection_model: DetectionModel, classification_model: ClassificationModel
+    ):
         self.detection_model = detection_model
+        self.classification_model = classification_model
 
     def process_video(self, video_src: str) -> FrameData:
         detections_data = self.detection_model.detect(video_src)
