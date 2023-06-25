@@ -39,8 +39,8 @@ export function getReport(_id: String){
       }).catch(console.error)
 }
 
-export function getAnalytics(filter_type?: String, filter_value?: String, group?: String){
+export function getAnalytics(filter_type?: String, group?: String){
     
-    return axios.get('/get_analytics', {params: {filter_type, filter_value, group}})
+    return axios.get('/get_analytics', {params: {filter_type, group}})
 }
 //teacher, subject, student
