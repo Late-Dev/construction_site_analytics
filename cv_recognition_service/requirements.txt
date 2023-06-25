@@ -7,3 +7,4 @@ matplotlib==3.5.2
 scikit-image
 pymongo==4.1.1
 pandas
+dvc[s3]
