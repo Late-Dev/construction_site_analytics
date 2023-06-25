@@ -15,7 +15,7 @@ class ActivityDetector(DetectionModel):
     def __init__(self) -> None:
         self.win_size = 30
         self.mv_threshold = 10
-        self.act_threshold = 0.15
+        self.act_threshold = 0.25
 
     @staticmethod
     def has_moved(track_coords: List[Tuple[int, int]], threshold: int):
@@ -27,13 +27,11 @@ class ActivityDetector(DetectionModel):
         )
 
     @staticmethod
-    def has_action(frames: List[np.ndarray], threshold: float):
+    def has_action(frames: deque[np.ndarray], threshold: float):
         start, end = frames[0], frames[-1]
         start, end = cv2.resize(start, (100, 100)), cv2.resize(end, (100, 100))
-        diff = np.abs(start - end).sum()
 
-        diff = start.copy()
-        cv2.absdiff(start, end, diff)
+        diff = np.abs(start - end)
         diff = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
         for i in range(0, 3):
             dilated = cv2.dilate(diff.copy(), None, iterations=i + 1)
