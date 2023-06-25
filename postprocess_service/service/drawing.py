@@ -62,39 +62,48 @@ class DrawingService:
         detections = frame_data.detections
         vehicle_actions = frame_data.actions
 
-        for detection, actions in zip(detections, vehicle_actions):
+        for det, _ in zip(detections, vehicle_actions):
             # draw object bbox
             rect_color = tuple(
-                self.color_map[detection.class_name].tolist()
-                + [min(1, math.ceil(detection.score * 10) / 10 * 2)]
+                self.color_map[det.class_name].tolist()
+                + [min(1, math.ceil(det.score * 10) / 10 * 2)]
             )
             cv2.rectangle(
                 frame,
-                (detection.xyxy[0], detection.xyxy[1]),
-                (detection.xyxy[2], detection.xyxy[3]),
+                (det.x_min, det.y_min),
+                (det.x_max, det.y_max),
                 rect_color,
                 line_thickness,
             )
 
             # draw naming bbox and write tracking_id
-            naming = f"#{detection.tracking_id}: {detection.class_name}"
-            rect_len = 200
+            naming = f"#{det.tracking_id}: {det.class_name}"
+            rect_len = 180
             cv2.rectangle(
                 frame,
-                (detection.xyxy[0], detection.xyxy[1] - 25),
-                (detection.xyxy[0] + rect_len, detection.xyxy[1]),
+                (det.x_min, det.y_min - 25),
+                (det.x_min + rect_len, det.y_min + 5),
                 rect_color,
                 -1,
             )
             cv2.putText(
                 frame,
                 naming,
-                (detection.xyxy[0], detection.xyxy[1]),
+                (det.x_min, det.y_min),
                 font,
                 font_scale,
                 (0, 0, 0),
                 2,
                 cv2.FILLED,
             )
+
+            # fill not active boxes
+            alpha = 0.5
+            if not det.activity:
+                rect = np.ones((det.height, det.width, 3)) * np.array(rect_color[:3])
+                frame_box = frame[det.y_min : det.y_max, det.x_min : det.x_max]
+                frame[det.y_min : det.y_max, det.x_min : det.x_max] = (
+                    alpha * frame_box + (1 - alpha) * rect
+                )
 
         return frame
