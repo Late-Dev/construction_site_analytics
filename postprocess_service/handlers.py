@@ -26,6 +26,38 @@ def process_video_handler(filepath: str, task: dict):
         update_task(task, {"status": StatusEnum.error})
 
 
+def date_to_secs(date):
+    date = datetime.datetime.strptime(date, "%H:%M:%S")
+    secs = date.second + date.minute * 60 + date.hour * 60 * 60
+    return secs
+
+
+def date_to_frame_num(date, fps):
+    date = datetime.datetime.strptime(date, "%H:%M:%S")
+    secs = date.second + date.minute * 60 + date.hour * 60 * 60
+    return secs * fps
+
+
+def find_track(track_id, tracks, frame_num, fps, activity=1):
+    if activity == 1:
+        for i, t in enumerate(tracks):
+            if (
+                t["id"] == track_id
+                and t["type"] == ""
+                and date_to_frame_num(t["end"], fps) + 2 * fps >= frame_num
+            ):
+                return i
+    else:
+        for i in range(len(tracks) - 1, -1, -1):
+            t = tracks[i]
+            if (
+                t["id"] == track_id
+                and t["type"] == "простой"
+                and date_to_frame_num(t["end"], fps) + 2 * fps >= frame_num
+            ):
+                return i
+
+
 def generate_json_result_handler(filepath: str, task: dict):
     """
     result = [
@@ -51,7 +83,7 @@ def generate_json_result_handler(filepath: str, task: dict):
 
     result = []
 
-    # process tracks
+    # get unique tracks
     def get_unique_track_ids(frame_data_list):
         track_ids = set()
         for frame_data in frame_data_list:
@@ -60,22 +92,46 @@ def generate_json_result_handler(filepath: str, task: dict):
         return track_ids
 
     unique_tracks = get_unique_track_ids(frame_data_list)
+
+    # process tracks data
     result = [
         {
             "id": track_id,
             "class": None,
-            "start": None,
-            "end": None,
+            "start": "0:00:00",
+            "end": "0:00:00",
+            "type": "",
         }
         for track_id in unique_tracks
     ]
-    track2idx = {track: i for i, track in enumerate(unique_tracks)}
     for frame_num, frame_data in enumerate(frame_data_list):
         for det in frame_data.detections:
             track_id = int(det.tracking_id)
-            result[track2idx[track_id]]["class"] = det.class_name
-            if result[track2idx[track_id]]["start"] is None:
-                result[track2idx[track_id]]["start"] = frame_to_timestamp[frame_num]
-            result[track2idx[track_id]]["end"] = frame_to_timestamp[frame_num]
+            idx = find_track(track_id, result, frame_num, fps, 1)
+            result[idx]["class"] = det.class_name
+            if result[idx]["start"] is None:
+                result[idx]["start"] = frame_to_timestamp[frame_num]
+            result[idx]["end"] = frame_to_timestamp[frame_num]
+            if not det.activity:
+                activity_endtime = date_to_frame_num(result[idx]["end"], fps)
+                if activity_endtime + 2 * fps >= frame_num:
+                    idx = find_track(track_id, result, frame_num, fps, 0)
+                    if idx is None:
+                        result.append(
+                            {
+                                "id": track_id,
+                                "class": det.class_name,
+                                "start": frame_to_timestamp[frame_num],
+                                "end": frame_to_timestamp[frame_num],
+                                "type": "простой",
+                            }
+                        )
+                    else:
+                        result[idx]["end"] = frame_to_timestamp[frame_num]
+                else:
+                    idx = find_track(track_id, result, frame_num, fps, 0)
+                    result[idx]["end"] = frame_to_timestamp[frame_num]
+
+    result = list(filter(lambda res: res["start"] != res["end"], result))
 
     update_task(task, {"json_res": result})
