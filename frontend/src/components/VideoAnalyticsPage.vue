@@ -8,22 +8,17 @@
             </p>
             
         </EmptyCard>
-        <BaseButton type="secondary" class="download__button" @click="downloadReport()" style="width: 300px; margin: 20px"> Скачать отчет </BaseButton>
-        <!-- <EmptyCard class="analytics__card">
-          <template #header>
-                Состояние класса во время урока
-            </template>
-          <BarChart v-bind="barChartProps"></BarChart>
-        </EmptyCard>
+        <BaseButton type="secondary" class="download__button" @click="downloadReport()" style="width: 300px; margin: 20px"> Скачать отчет (json) </BaseButton>
+
         <EmptyCard class="analytics__card">
           <template #header>
-                Состояние отдельного ученика за урок
+                Активность техники
             </template>
-            <BaseSelect @input="selectStudent" :options="lineOptions" label="Имя ученика"></BaseSelect>
+            <BaseSelect @input="selectStudent" :options="lineOptions" label="Номер техники"></BaseSelect>
         </EmptyCard>
         <div>
           <LineChartCard :dataValues="dt" v-for="dt, name in lineData" :key="dt" class="analytics__card" :header="name"></LineChartCard>
-        </div> -->
+        </div>
     </div>
 </template>
 
@@ -32,14 +27,14 @@ import EmptyCard from "./EmptyCard.vue"
 import BaseHeader from "./BaseHeader.vue"
 import BaseButton from "./BaseButton.vue";
 import { useMainStore } from "@/store/index";
-// import { ref, computed, onMounted} from 'vue'
-import { ref, onMounted} from 'vue'
+import { ref, computed, onMounted} from 'vue'
+// import { ref, onMounted} from 'vue'
 
 // import { BarChart, useBarChart } from "vue-chart-3";
 import { Chart,  registerables } from "chart.js";
 import { getVideoCard } from '@/api/index'
-// import BaseSelect from "./BaseSelect.vue";
-// import LineChartCard from "./LineChartCard.vue";
+import BaseSelect from "./BaseSelect.vue";
+import LineChartCard from "./LineChartCard.vue";
 import { getReport} from '@/api/index'
 
 
@@ -65,22 +60,22 @@ Chart.register(...registerables);
 
 // const dataLabels = computed(()=>videoCard.value.bar_data?.names);
 
-// const lineOptions = computed(()=>{
-//   if(videoCard.value.line_data !== undefined){
-//     console.log(videoCard.value.line_data)
+const lineOptions = computed(()=>{
+  if(videoCard.value.line_data !== undefined){
+    console.log(videoCard.value.line_data)
 
-//     const names = Object.keys(videoCard.value.line_data)
-//     return names.map((item)=>({label:item, value: item,}))
-//   } 
-//   return [{label:'', value:''}]
-// })
+    const names = Object.keys(videoCard.value.line_data)
+    return names.map((item)=>({label:item, value: item,}))
+  } 
+  return [{label:'', value:''}]
+})
 
-// const lineData = ref([])
+const lineData = ref([])
 
-// function selectStudent(name){
-//   lineData.value = videoCard.value.line_data[name]
-//   console.log(lineData.value)
-// }
+function selectStudent(name){
+  lineData.value = videoCard.value.line_data[name]
+  console.log(lineData.value)
+}
 
 // const toggleLegend = ref(true); 
 // console.log(toggleLegend)

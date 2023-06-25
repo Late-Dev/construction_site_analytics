@@ -64,7 +64,7 @@ async def get_report(_id: str):
     json.dump(result, open(file_path, 'w'))
     return FileResponse(path=file_path, media_type='application/json', filename=file_path)
 
-# @app.get("/get_analytics")
-# async def get_analytics(filter_type: str=None, filter_value: str=None, group:str=None):
-#     result = await get_analytics_data(filter_type, filter_value, group)
-#     return result
+@app.get("/get_analytics")
+async def get_analytics(filter_type: str=None, group:str=None):
+    result = await get_analytics_data(filter_type, group)
+    return result

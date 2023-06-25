@@ -9,47 +9,32 @@
             <div class="row">
 
                 <BaseSelect :options="[
-                    {value:'teacher', label:'Учитель'},
-                    {value:'student', label:'Ученик'},
-                    {value:'subject', label:'Предмет'}
-                ]" label="Тип аналитики"
+                    {label: 'Школа Архангельск', value: 'Школа Архангельск'},
+                ]" label="Строительный объект"
                 @input="(data)=>{typeAnal = data}"
                  />
-                <BaseSelect v-if="typeAnal=='teacher'"
-                :options="[
-                            {label: 'Анна Андреевна Рязанова', value: 'Анна Андреевна Рязанова'},
-                            {label: 'Альбина Николаевна Крупнина', value: 'Альбина Николаевна Крупнина'},
-                            {label: 'Галина Александровна Неуймина', value: 'Галина Александровна Неуймина'},
-                            ]"
-                @input="(data)=>{typeVal = data}"
-                label="Учитель" />
-                <BaseSelect @input="(data)=>{typeVal = data}" v-if="typeAnal=='student'" label="Ученик" />
-                <BaseSelect @input="(data)=>{typeVal = data}"  v-if="typeAnal=='subject'"
-                :options="[
-                            {label: 'Физика', value: 'Физика'},
-                            {label: 'Математика', value: 'Математика'},
-                            {label: 'Английский', value: 'Английский'},
-                            ]"
-                
-                label="Предмет" />
                 <BaseSelect
                 :options="[
-                    {value:'teacher', label:'Учитель'},
-                    {value:'student', label:'Ученик'},
-                    {value:'subject', label:'Предмет'}
+                    {value:'tractor', label:'Трактор'},
+                    {value:'digger', label:'Экскаватор'},
+                    {value:'truck', label:'Грузовой автомобиль'},
+                    {value:'crane', label:'Подъемный кран'}
                 ]"
                 @input="(data)=>{groupBy = data}"
 
-                label="Группировка" />
+                label="Техника" />
             </div>
             <div class="btn">
 
                 <BaseButton  @click="search">Найти</BaseButton>
             </div>
         </EmptyCard>
-        <BarChartCard class="cardbar" :header="name" :dataValues="graph.values" :dataLabels="graph.names"  :key="graph" v-for="graph, name in graphs">
+        <div>
+          <LineChartCard :dataValues="dt" v-for="dt, name in lineData" :key="dt" class="analytics__card" :header="name"></LineChartCard>
+        </div>
+        <!-- <BarChartCard class="cardbar" :header="name" :dataValues="graph.values" :dataLabels="graph.names"  :key="graph" v-for="graph, name in graphs">
            
-        </BarChartCard>
+        </BarChartCard> -->
     </div>
 
 </template>
@@ -61,25 +46,24 @@ import BaseSelect from './BaseSelect.vue';
 import { onMounted, ref } from 'vue';
 import { getAnalytics } from '@/api/index'
 import BaseButton from './BaseButton.vue';
-import BarChartCard from './BarChartCard.vue';
+import LineChartCard from "./LineChartCard.vue";
+// import BarChartCard from './BarChartCard.vue';
 
 
-
+const lineData = ref([])
 
 const typeAnal = ref('')
-
-const typeVal = ref('')
 
 const groupBy = ref('')
 
 onMounted(async ()=>{
 })
 
-const graphs = ref('')
+// const graphs = ref('')
 
 async function search(){
-    const resp = await getAnalytics(typeAnal.value, typeVal.value, groupBy.value)
-    graphs.value = resp.data
+    const resp = await getAnalytics(typeAnal.value, groupBy.value)
+    lineData.value = resp.data
 }
 
 
@@ -103,4 +87,13 @@ async function search(){
     margin-top: 25px;
 }
 
+</style>
+
+<style lang="scss" scoped>
+.analytics{
+  margin-bottom: 300px;
+  &__card{
+    margin-top: 40px;
+  }
+}
 </style>
