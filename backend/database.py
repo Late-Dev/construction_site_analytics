@@ -41,11 +41,22 @@ async def get_video_card_data(_id):
     card = await videos_collection.find_one({'_id': ObjectId(_id)})
     if card is not None:
         card['_id'] = str(card['_id'])
-    line_data = {
-        'Грузовик': {'Активность':[0]*100 + [1]*50 + [0]*100},
-        'Трактор': {'Активность':[0]*100 + [1]*50 + [0]*100}
-    }
-    card['line_data'] = line_data
+    if 'recognition_results' in card:
+        class2name = {
+            'crane': "Подъемный кран",
+            'truck': 'Грузовой автомобиль',
+            'tractor': 'Трактор',
+            'digger': 'Экскаватор'
+        }
+        line_data = {}
+        for rec in card['recognition_results']['data']:
+            for det in rec['detections']:
+                line_data.setdefault(f'{det["tracking_id"]} {class2name[det["class_name"]]}', {}).setdefault('Активность', []).append(det['activity'])
+        # line_data = {
+        #     'Грузовик': {'Активность':[0]*100 + [1]*50 + [0]*100},
+        #     'Трактор': {'Активность':[0]*100 + [1]*50 + [0]*100}
+        # }
+        card['line_data'] = line_data
     return card
 
 

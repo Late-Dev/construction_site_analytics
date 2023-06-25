@@ -8,7 +8,7 @@
             </p>
             
         </EmptyCard>
-        <BaseButton type="secondary" class="download__button" @click="downloadReport()" style="width: 300px; margin: 20px"> Скачать отчет </BaseButton>
+        <BaseButton type="secondary" class="download__button" @click="downloadReport()" style="width: 300px; margin: 20px"> Скачать отчет (json) </BaseButton>
 
         <EmptyCard class="analytics__card">
           <template #header>
