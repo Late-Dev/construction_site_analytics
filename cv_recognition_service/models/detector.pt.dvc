@@ -1,5 +1,5 @@
 outs:
-- md5: 7a2ae966c03efafea9446bc20cc7ba13
-  size: 14680064
+- md5: 92f4fdd3f08eb14ba5975608fb04fdb4
+  size: 52001558
   hash: md5
   path: detector.pt
