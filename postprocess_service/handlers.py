@@ -39,7 +39,11 @@ def date_to_frame_num(date, fps):
 
 
 def find_track(track_id, tracks, frame_num, fps, activity=1):
-    if activity == 1:
+    if activity == -1:
+        for i, t in enumerate(tracks):
+            if t["id"] == track_id:
+                return i
+    elif activity == 1:
         for i, t in enumerate(tracks):
             if (
                 t["id"] == track_id
@@ -56,6 +60,7 @@ def find_track(track_id, tracks, frame_num, fps, activity=1):
                 and date_to_frame_num(t["end"], fps) + 2 * fps >= frame_num
             ):
                 return i
+    return -1
 
 
 def generate_json_result_handler(filepath: str, task: dict):
@@ -107,7 +112,7 @@ def generate_json_result_handler(filepath: str, task: dict):
     for frame_num, frame_data in enumerate(frame_data_list):
         for det in frame_data.detections:
             track_id = int(det.tracking_id)
-            idx = find_track(track_id, result, frame_num, fps, 1)
+            idx = find_track(track_id, result, frame_num, fps, -1)
             result[idx]["class"] = det.class_name
             if result[idx]["start"] is None:
                 result[idx]["start"] = frame_to_timestamp[frame_num]
@@ -116,7 +121,7 @@ def generate_json_result_handler(filepath: str, task: dict):
                 activity_endtime = date_to_frame_num(result[idx]["end"], fps)
                 if activity_endtime + 2 * fps >= frame_num:
                     idx = find_track(track_id, result, frame_num, fps, 0)
-                    if idx is None:
+                    if idx == -1:
                         result.append(
                             {
                                 "id": track_id,
