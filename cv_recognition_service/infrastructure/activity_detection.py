@@ -13,8 +13,8 @@ from transport.models import FrameData
 
 class ActivityDetector(DetectionModel):
     def __init__(self) -> None:
-        self.win_size = 15
-        self.mv_threshold = 20
+        self.win_size = 30
+        self.mv_threshold = 10
         self.act_threshold = 0.15
 
     @staticmethod
