@@ -33,6 +33,8 @@ async def get_video_list_data():
             del video['bar_data']
         if 'line_data' in video:
             del video['line_data']
+        if 'recognition_results' in video:
+            del video['recognition_results']
         videos.append(video)
     return videos
 
