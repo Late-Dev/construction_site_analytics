@@ -70,8 +70,8 @@ class DrawingService:
             )
             cv2.rectangle(
                 frame,
-                (det.x_min, det.y_min),
-                (det.x_max, det.y_max),
+                (det.xyxy[0], det.xyxy[1]),
+                (det.xyxy[2], det.xyxy[3]),
                 rect_color,
                 line_thickness,
             )
@@ -81,15 +81,15 @@ class DrawingService:
             rect_len = 180
             cv2.rectangle(
                 frame,
-                (det.x_min, det.y_min - 25),
-                (det.x_min + rect_len, det.y_min + 5),
+                (det.xyxy[0], det.xyxy[1] - 25),
+                (det.xyxy[0] + rect_len, det.xyxy[1] + 5),
                 rect_color,
                 -1,
             )
             cv2.putText(
                 frame,
                 naming,
-                (det.x_min, det.y_min),
+                (det.xyxy[0], det.xyxy[1]),
                 font,
                 font_scale,
                 (0, 0, 0),
@@ -101,8 +101,8 @@ class DrawingService:
             alpha = 0.5
             if not det.activity:
                 rect = np.ones((det.height, det.width, 3)) * np.array(rect_color[:3])
-                frame_box = frame[det.y_min : det.y_max, det.x_min : det.x_max]
-                frame[det.y_min : det.y_max, det.x_min : det.x_max] = (
+                frame_box = frame[det.xyxy[1] : det.xyxy[3], det.xyxy[0] : det.xyxy[2]]
+                frame[det.xyxy[1] : det.xyxy[3], det.xyxy[0] : det.xyxy[2]] = (
                     alpha * frame_box + (1 - alpha) * rect
                 )
 
