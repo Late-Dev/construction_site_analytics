@@ -60,5 +60,100 @@ async def get_video_card_data(_id):
     return card
 
 
-async def get_analytics_data(filter_type: str=None, filter_value: str=None, group:str=None):
-    return []
+async def get_analytics_data(filter_type: str=None, group:str=None):
+    if filter_type == '':
+        filter_type = None
+    if group == '':
+        group = None
+
+    if filter_type is None and group is None:
+        data = {}
+        sdata = {}
+        async for video in videos_collection.find():
+            if video['status'] != StatusEnum.ready:
+                continue
+            used_id = set()
+            if video['date'] not in data:
+                data[video['date']] = 0
+            if video['date'] not in sdata:
+                sdata[video['date']] = 0
+            for rec in video['json_res']:
+                if rec['id'] not in used_id and rec['type'] != 'простой':
+                    used_id.add(rec['id'])
+                    data[video['date']] += 1
+                if rec['type'] != 'простой':
+                    sdata[video['date']] += 1
+        line_data = {
+            'Количество используемой техники': [data[i] for i in sorted(data)],
+            'Количество простоев': [sdata[i] for i in sorted(sdata)],
+        }
+        return line_data
+
+    elif filter_type is not None and group is None: 
+        data = {}
+        sdata = {}
+        async for video in videos_collection.find({'construction_object': filter_type}):
+            if video['status'] != StatusEnum.ready:
+                continue
+            used_id = set()
+            if video['date'] not in data:
+                data[video['date']] = 0
+            if video['date'] not in sdata:
+                sdata[video['date']] = 0
+            for rec in video['json_res']:
+                if rec['id'] not in used_id:
+                    used_id.add(rec['id'])
+                    data[video['date']] += 1
+                if rec['type'] == 'простой':
+                    sdata[video['date']] += 1
+        line_data = {
+            'Количество используемой техники': [data[i] for i in sorted(data)],
+            'Количество простоев': [sdata[i] for i in sorted(sdata)],
+        }
+        return line_data  
+     
+    elif filter_type is None and group is not None:
+        data = {}
+        sdata = {}
+        async for video in videos_collection.find():
+            if video['status'] != StatusEnum.ready:
+                continue
+            used_id = set()
+            if video['date'] not in data:
+                data[video['date']] = 0
+            if video['date'] not in sdata:
+                sdata[video['date']] = 0
+            for rec in video['json_res']:
+                if rec['id'] not in used_id and rec['class'] == group:
+                    used_id.add(rec['id'])
+                    data[video['date']] += 1
+                if rec['type'] == 'простой' and rec['class'] == group:
+                    sdata[video['date']] += 1
+        line_data = {
+            'Количество используемой техники': [data[i] for i in sorted(data)],
+            'Количество простоев': [sdata[i] for i in sorted(sdata)],
+        }
+        return line_data
+    
+    else:
+        data = {}
+        sdata = {}
+        async for video in videos_collection.find({'construction_object': filter_type}):
+            if video['status'] != StatusEnum.ready:
+                continue
+            used_id = set()
+            if video['date'] not in data:
+                data[video['date']] = 0
+            if video['date'] not in sdata:
+                sdata[video['date']] = 0
+            for rec in video['json_res']:
+                if rec['id'] not in used_id and rec['class'] == group:
+                    used_id.add(rec['id'])
+                    data[video['date']] += 1
+                if rec['type'] == 'простой' and rec['class'] == group:
+                    sdata[video['date']] += 1
+        line_data = {
+            'Количество используемой техники': [data[i] for i in sorted(data)],
+            'Количество простоев': [sdata[i] for i in sorted(sdata)],
+        }
+        return line_data
