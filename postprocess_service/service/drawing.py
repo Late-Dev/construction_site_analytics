@@ -100,7 +100,8 @@ class DrawingService:
             # fill not active boxes
             alpha = 0.5
             if not det.activity:
-                rect = np.ones((det.height, det.width, 3)) * np.array(rect_color[:3])
+                h, w = det.xyxy[3] - det.xyxy[1], det.xyxy[2] - det.xyxy[0]
+                rect = np.ones((h, w, 3)) * np.array(rect_color[:3])
                 frame_box = frame[det.xyxy[1] : det.xyxy[3], det.xyxy[0] : det.xyxy[2]]
                 frame[det.xyxy[1] : det.xyxy[3], det.xyxy[0] : det.xyxy[2]] = (
                     alpha * frame_box + (1 - alpha) * rect
