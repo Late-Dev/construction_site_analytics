@@ -1,0 +1,1 @@
+Store raw video files that were annotated in CVAT

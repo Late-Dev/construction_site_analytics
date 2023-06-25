@@ -1,0 +1,71 @@
+version: "3.5"
+
+services:
+
+  backend:
+    build: ./backend
+    ports:
+      - 8000:8000
+    environment:
+      - MONGO_HOST=mongo
+
+  frontend:
+    build: ./frontend
+    ports:
+      - 8080:8080
+
+  cv-service:
+    runtime: nvidia
+    build: ./cv_recognition_service
+    # command: mkdir output/ && mkdir tmp/
+    ports:
+      - 9988:9988
+    environment:
+      - MONGO_HOST=mongo
+      - MINIO_HOST=minio
+
+  postprocess-service:
+    build: ./postprocess_service
+    environment:
+      - MONGO_HOST=mongo
+      - MINIO_HOST=minio
+
+  mongo:
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+    ports:
+      - 27017:27017
+
+  minio:
+    image: minio/minio:latest
+    command: server /data/ --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio-storage:/data
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://0.0.0.0:9000/minio/health/live"
+        ]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  createbuckets:
+    image: minio/mc
+    environment:
+      - MINIO_API_CORS_ALLOW_ORIGIN=*
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c " /usr/bin/mc config host add myminio http://minio:9000 minioadmin minioadmin; /usr/bin/mc mb myminio/videos; /usr/bin/mc policy set public myminio/videos; /usr/bin/mc mb myminio/processed-videos; /usr/bin/mc policy set public myminio/processed-videos; /usr/bin/mc mb myminio/preview-images; /usr/bin/mc policy set public myminio/preview-images; exit 0; "
+
+volumes:
+  minio-storage:

@@ -1,0 +1,17 @@
+$color-bg: #F9F9F9;
+$color-primary: #F49E51;
+$color-primary-dark: #F49E51;
+$color-primary-darkmode: #FFE9D6;
+$color-primary-bg: #EFF0F6;
+$color-input-bg: #EFF0F7;
+$color-text-main: #14142B;
+$color-white: #FCFCFC;
+@mixin input-like {
+    background-color: $color-primary-bg;
+    border-radius: 6px;
+
+    input {
+        background: transparent;
+        border: none;
+    }
+}
