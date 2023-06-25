@@ -141,10 +141,9 @@ def generate_json_result_handler(filepath: str, task: dict):
         filter(
             lambda res: (
                 res["type"] == "простой"
-                and (date_to_secs(res["end"]) - date_to_secs(res["start"]))
-                or res["type"] == ""
+                and (date_to_secs(res["end"]) - date_to_secs(res["start"]) >= 60)
             )
-            >= 60,
+            or res["type"] == "",
             result,
         )
     )
