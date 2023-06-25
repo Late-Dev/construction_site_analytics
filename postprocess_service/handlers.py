@@ -137,6 +137,11 @@ def generate_json_result_handler(filepath: str, task: dict):
                     idx = find_track(track_id, result, frame_num, fps, 0)
                     result[idx]["end"] = frame_to_timestamp[frame_num]
 
-    result = list(filter(lambda res: res["start"] != res["end"], result))
+    result = list(
+        filter(
+            lambda res: date_to_secs(res["end"]) - date_to_secs(res["start"]) >= 60,
+            result,
+        )
+    )
 
     update_task(task, {"json_res": result})
