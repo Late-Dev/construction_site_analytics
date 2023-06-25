@@ -61,7 +61,7 @@ async def get_report(_id: str):
     result = result['json_res']
     
     file_path = 'report.json'
-    json.dump(result, open(file_path, 'w'))
+    json.dump(result, open(file_path, 'w', encoding='utf8'), ensure_ascii=False)
     return FileResponse(path=file_path, media_type='application/json', filename=file_path)
 
 @app.get("/get_analytics")
