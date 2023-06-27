@@ -30,7 +30,7 @@ export function getVideoCard(_id: String){
 export function getReport(_id: String){
     axios.get('/get_report', { responseType: 'blob', params: {_id} })
       .then(response => {
-        const blob = new Blob([response.data], { type: 'application/pdf' })
+        const blob = new Blob([response.data], { type: 'application/json' })
         const link = document.createElement('a')
         link.href = URL.createObjectURL(blob)
         link.download = 'report.json'
